@@ -16,7 +16,7 @@ and [submitting pull requests](#pull-requests).
 
 ## Bug reports
 
-A bug is a _demonstrable problem_ that is caused by the code in the repository.
+A bug is a _demonstrable problem_ that is caused by the code in the repository. 
 Good bug reports are extremely helpful - thank you!
 
 Guidelines for bug reports:
