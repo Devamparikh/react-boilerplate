@@ -23,7 +23,7 @@ jobs:
           npm --version
           npx commitlint --version
 
-      - name: Install Commitlint
+      - name: Install Commitlint 
         run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
      
       - name: Validate current commit (last commit) with commitlint
