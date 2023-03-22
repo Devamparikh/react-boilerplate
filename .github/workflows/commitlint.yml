@@ -16,6 +16,13 @@ jobs:
         with: 
           node-version: '14'
 
+      - name: Print versions
+        run: |
+          git --version
+          node --version
+          npm --version
+          npx commitlint --version
+
       - name: Install Commitlint
         run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
      
