@@ -1,36 +1,23 @@
-name: CI
+name: Conventional Commit Checker
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ develop ]
 
 jobs:
-  commitlint:
-    runs-on: ubuntu-22.04
+  check-commit-message:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
         with:
-          fetch-depth: 0
-      - name: Install required dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y sudo
-          sudo apt install -y git curl
-          curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-          sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs
-      - name: Print versions
-        run: |
-          git --version
-          node --version
-          npm --version
-          npx commitlint --version
-      - name: Install commitlint
-        run: |
-          sudo npm install conventional-changelog-conventionalcommits
-          sudo npm install commitlint@latest
+          node-version: '14'
 
-      - name: Validate current commit (last commit) with commitlint
-        if: github.event_name == 'push'
-        run: npx commitlint --from HEAD~1 --to HEAD --verbose
+      - name: Install Commitlint
+        run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
 
-      - name: Validate PR commits with commitlint
-        if: github.event_name == 'pull_request'
-        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      - name: Check commit message
+        run: npx commitlint --from=${{ github.event.before }} --to=${{ github.event.after }}
