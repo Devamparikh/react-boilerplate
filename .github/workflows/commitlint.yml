@@ -1,8 +1,8 @@
 name: Conventional Commit Checker
-
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
 
 jobs:
   check-commit-message:
@@ -11,25 +11,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with: 
-          node-version: '14'
-
-      - name: Print versions
+      - name: Check if commit is conventional
         run: |
-          git --version
-          node --version
-          npm --version
-          npx commitlint --version
-
-      - name: Install Commitlint
-        run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
-     
-      - name: Validate current commit (last commit) with commitlint
-        if: github.event_name == 'push'
-        run: npx commitlint --from HEAD~1 --to HEAD --verbose
-
-      - name: Validate PR commits with commitlint
-        if: github.event_name == 'pull_request'
-        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+          commit_message=$(git log -1 --pretty=%B)
+          if ! echo "$commit_message" | grep -qE '^(build|ci|chore|docs|feat|fix|perf|refactor|revert|style|test)(\([A-Za-z0-9-]+\))?: [^\n]{1,72}(?:\n\n[A-Za-z0-9\W]{1,})?$'; then
+            echo "Commit message is not conventional"
+            exit 1
+          fi
